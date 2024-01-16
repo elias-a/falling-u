@@ -14,31 +14,31 @@ class Vector:
 class U:
     def __init__(
             self,
-            base_length_m: float = None,
-            side_length_m: float = None,
-            center_of_mass_position_x_m: float = None,
-            center_of_mass_position_y_m: float = None,
-            center_of_mass_velocity_x_m_s: float = None,
-            center_of_mass_velocity_y_m_s: float = None,
-            angular_position_rad: float = None,
-            angular_velocity_rad_s: float = None):
+            base_length_m = 0.5,
+            side_length_m = 0.5,
+            position_x_m = 0.,
+            position_y_m = 1.,
+            velocity_x_m_s = 0.,
+            velocity_y_m_s = 0.,
+            angular_position_rad = 0.,
+            angular_velocity_rad_s = 0.):
         # U dimensions
         self._base_length_m = base_length_m
         self._side_length_m = side_length_m
         self._center_of_mass_height_m = self._compute_center_of_mass()
 
         # U state
-        self._center_of_mass_position_m = Vector(
-            x=center_of_mass_position_x_m,
-            y=center_of_mass_position_y_m)
-        self._center_of_mass_velocity_m_s = Vector(
-            x=center_of_mass_velocity_x_m_s,
-            y=center_of_mass_velocity_y_m_s)
+        self._position_m = Vector(
+            x=position_x_m,
+            y=position_y_m)
+        self._velocity_m_s = Vector(
+            x=velocity_x_m_s,
+            y=velocity_y_m_s)
         self._angular_position_rad = angular_position_rad
         self._angular_velocity_rad_s = angular_velocity_rad_s
 
     def _get_position_norm(self):
-        return center_of_mass_position_m.get_norm()
+        return position_m.get_norm()
 
     def _compute_center_of_mass(self):
         return (
