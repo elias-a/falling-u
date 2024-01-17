@@ -37,6 +37,30 @@ class U:
         self._angular_position_rad = angular_position_rad
         self._angular_velocity_rad_s = angular_velocity_rad_s
 
+    def position_m(self, x: float = None, y: float = None):
+        if x is not None and isinstance(x, float):
+            self._position_m.x = x
+        if y is not None and isinstance(y, float):
+            self._position_m.y = y
+        return self._position_m
+
+    def velocity_m_s(self, v_x: float = None, v_y: float = None):
+        if v_x is not None and isinstance(v_x, float):
+            self._velocity_m_s.x = v_x
+        if v_y is not None and isinstance(v_y, float):
+            self._velocity_m_s.y = v_y
+        return self._velocity_m_s
+
+    def angular_position_rad(self, theta: float = None):
+        if theta is not None and isinstance(theta, float):
+            self._angular_position_rad = theta
+        return self._angular_position_rad
+
+    def angular_velocity_rad_s(self, omega: float = None):
+        if omega is not None and isinstance(theta, float):
+            self._angular_velocity_rad_s = omega
+        return self._angular_velocity_rad_s
+
     def _get_position_norm(self):
         return position_m.get_norm()
 

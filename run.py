@@ -1,6 +1,7 @@
 import os
 import tomllib
 from u import U
+from simulate import Simulation
 
 
 try:
@@ -16,6 +17,7 @@ try:
         velocity_y_m_s = config["STATE"]["VELOCITY_Y_M_S"]
         angular_position_rad = config["STATE"]["ANGULAR_POSITION_RAD"]
         angular_velocity_rad_s = config["STATE"]["ANGULAR_VELOCITY_RAD_S"]
+        time_step_s = config["SIMULATION"]["TIME_STEP_S"]
 except Exception as e:
     raise Exception()
 
@@ -28,3 +30,5 @@ _u = U(
     velocity_y_m_s=velocity_y_m_s,
     angular_position_rad=angular_position_rad,
     angular_velocity_rad_s=angular_velocity_rad_s)
+
+simulation = Simulation(_u, time_step_s=time_step_s)
