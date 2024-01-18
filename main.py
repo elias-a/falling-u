@@ -32,3 +32,4 @@ _u = U(
     angular_velocity_rad_s=angular_velocity_rad_s)
 
 simulation = Simulation(_u, time_step_s=time_step_s)
+simulation.run()

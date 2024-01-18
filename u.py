@@ -8,7 +8,7 @@ class Vector:
     y: float
 
     def get_norm(self):
-        return math.sqrt(x ** 2 + y ** 2)
+        return math.sqrt(self.x ** 2 + self.y ** 2)
 
 
 class U:
@@ -62,7 +62,7 @@ class U:
         return self._angular_velocity_rad_s
 
     def _get_position_norm(self):
-        return position_m.get_norm()
+        return self.position_m().get_norm()
 
     def _compute_center_of_mass(self):
         return (
@@ -70,14 +70,20 @@ class U:
             (2 * self._side_length_m + self._base_length_m))
 
     def compute_distance_from_ground(self):
-        alpha = 2 * math.pi - self._angular_position_rad
+        alpha = (
+            self._angular_position_rad 
+            if 0 <= self._angular_position_rad 
+                and self._angular_position_rad <= math.pi
+            else 2 * math.pi - self._angular_position_rad)
         position_norm = self._get_position_norm()
         distance_m = 0
 
-        # TODO: what to do when alpha is 0?
+        # TODO: update paper with alpha=0 equation
         # TODO: should I use math.atan or math.atan2?
 
-        if 0 < alpha and alpha < math.pi / 2:
+        if alpha == 0:
+            distance_m = self._center_of_mass_height_m
+        elif 0 < alpha and alpha < math.pi / 2:
             distance_m = (
                 math.sqrt(self._base_length_m ** 2 / 4 + 
                     self._center_of_mass_height_m ** 2) * 
