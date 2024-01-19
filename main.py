@@ -2,6 +2,7 @@ import os
 import tomllib
 from u import U
 from simulate import Simulation
+from visualize import visualize
 
 
 try:
@@ -33,3 +34,5 @@ _u = U(
 
 simulation = Simulation(_u, time_step_s=time_step_s)
 simulation.run()
+
+visualize(_u)
