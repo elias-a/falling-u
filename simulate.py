@@ -7,7 +7,8 @@ class Simulation:
         self._time_step_s = time_step_s
         self._gravity_m_s2 = gravity_m_s2
 
-    def run(self, total_time_s = 1):
+    def run(self, total_time_s = 1, rate = 1000):
+        data = []
         t = 0
         while t < total_time_s:
             self._propagate()
@@ -16,6 +17,8 @@ class Simulation:
                 break
 
             t += self._time_step_s
+
+        return data
 
     def _propagate(self):
         # Update position.

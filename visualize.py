@@ -1,7 +1,7 @@
 import vpython
 
 
-def visualize(u_object):
+def visualize(u_object, data, rate = 1000):
     base = vpython.box(
         pos=vpython.vec(
             u_object.position_m().x,
@@ -30,3 +30,6 @@ def visualize(u_object):
         width=0.001,
         up=vpython.vec(1,0,0))
     _u = vpython.compound([side_left, side_right, base])
+
+    for x in data:
+        vpython.rate(rate)
