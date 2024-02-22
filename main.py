@@ -2,7 +2,6 @@ import os
 import tomllib
 from u import U
 from simulate import Simulation
-from visualize import visualize
 
 
 try:
@@ -32,7 +31,5 @@ _u = U(
     angular_position_rad=angular_position_rad,
     angular_velocity_rad_s=angular_velocity_rad_s)
 
-rate = 1000
 simulation = Simulation(_u, time_step_s=time_step_s)
-data = simulation.run(rate=rate)
-visualize(_u, data, rate=rate)
+data = simulation.run()
