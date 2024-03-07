@@ -1,4 +1,14 @@
-import vpython
+from vpython import scene, box, vec, rate
+from u import Vector
+
+
+def _create_box(length, point, thickness, up):
+    return box(
+        pos=vec(point.x, point.y, 0),
+        length=length,
+        height=thickness,
+        width = thickness,
+        up=up)
 
 
 def visualize(dimensions, data):
@@ -6,44 +16,34 @@ def visualize(dimensions, data):
     if len(data) == 0:
         raise Exception("Empty data.")
 
-    vpython.scene.width = 500
-    vpython.scene.height = 600
-    vpython.scene.center = vpython.vec(0, u_object.position_m().y / 2, 0)
+    # Create the scene and center on the midpoint between the ground and 
+    # the starting point of the object.
+    scene.width = 500
+    scene.height = 600
+    scene.center = vec(0, data[0].y / 2, 0)
+    # The object is modeled with thin height and width. This value is
+    # purely for visual purposes.
     thickness = 0.001
 
-    ground = vpython.box(
-        pos=vpython.vec(0, 0, 0),
-        length=1,
-        height=0.01,
-        width=thickness)
-
-    base = vpython.box(
-        pos=vpython.vec(
-            u_object.position_m().x,
-            u_object.position_m().y - u_object._center_of_mass_height_m,
-            0),
-        length=u_object._base_length_m,
-        height=thickness,
-        width = thickness,
-        up=vpython.vec(0, 1, 0))
-    side_left = vpython.box(
-        pos=vpython.vec(
-            u_object.position_m().x - 0.5 * u_object._base_length_m,
-            u_object.position_m().y - u_object._center_of_mass_height_m + 0.5 * u_object._side_length_m,
-            0),
-        length=u_object._side_length_m,
-        height=thickness,
-        width=thickness,
-        up=vpython.vec(1, 0, 0))
-    side_right = vpython.box(
-        pos=vpython.vec(
-            u_object.position_m().x + 0.5 * u_object._base_length_m,
-            u_object.position_m().y - u_object._center_of_mass_height_m + 0.5 * u_object._side_length_m,
-            0),
-        length=u_object._side_length_m,
-        height=thickness,
-        width=thickness,
-        up=vpython.vec(1, 0, 0))
+    base = _create_box(
+        dimensions.base_length_m,
+        Vector(x=data[0].x, y=data[0].y - dimensions.center_of_mass()),
+        thickness,
+        vec(0, 1, 0))
+    side_left = _create_box(
+        dimensions.side_length_m,
+        Vector(
+            x=data[0].x - dimensions.base_length_m / 2,
+            y=data[0].y - dimensions.center_of_mass() + dimensions.side_length_m / 2),
+        thickness,
+        vec(1, 0, 0))
+    side_right = _create_box(
+        dimensions.side_length_m,
+        Vector(
+            x=data[0].x + dimensions.base_length_m / 2,
+            y=data[0].y - dimensions.center_of_mass() + dimensions.side_length_m / 2),
+        thickness,
+        vec(1, 0, 0))
 
     while True:
-        vpython.rate(60)
+        rate(60)

@@ -1,4 +1,5 @@
 import math
+from u import Vector
 
 
 class Simulation:
@@ -18,6 +19,7 @@ class Simulation:
 
             t += self._time_step_s
 
+        return [Vector(x=0, y=0.5)]
         return data
 
     def _propagate(self):

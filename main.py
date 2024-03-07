@@ -34,4 +34,4 @@ u_ = U(
 
 simulation = Simulation(u_, time_step_s=time_step_s)
 data = simulation.run()
-#visualize(u_.dimensions, data)
+visualize(u_.dimensions, data)
