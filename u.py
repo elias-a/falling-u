@@ -11,6 +11,17 @@ class Vector:
         return math.sqrt(self.x ** 2 + self.y ** 2)
 
 
+@dataclass(kw_only=True, frozen=True)
+class ShapeDimensions:
+    base_length_m: float
+    side_length_m: float
+
+    def center_of_mass(self):
+        return (
+            self.side_length_m ** 2 / 
+            (2 * self.side_length_m + self.base_length_m))
+
+
 class U:
     def __init__(
             self,
@@ -23,9 +34,9 @@ class U:
             angular_position_rad = 0.,
             angular_velocity_rad_s = 0.):
         # U dimensions
-        self._base_length_m = base_length_m
-        self._side_length_m = side_length_m
-        self._center_of_mass_height_m = self._compute_center_of_mass()
+        self.dimensions = ShapeDimensions(
+            base_length_m=base_length_m,
+            side_length_m=side_length_m)
 
         # U state
         self._position_m = Vector(
@@ -64,10 +75,6 @@ class U:
     def _get_position_norm(self):
         return self.position_m().get_norm()
 
-    def _compute_center_of_mass(self):
-        return (
-            self._side_length_m ** 2 / 
-            (2 * self._side_length_m + self._base_length_m))
 
     def compute_distance_from_ground(self):
         alpha = (
@@ -82,26 +89,27 @@ class U:
         # TODO: should I use math.atan or math.atan2?
 
         if alpha == 0:
-            distance_m = self._center_of_mass_height_m
+            distance_m = self.dimensions.center_of_mass()
         elif 0 < alpha and alpha < math.pi / 2:
             distance_m = (
-                math.sqrt(self._base_length_m ** 2 / 4 + 
-                    self._center_of_mass_height_m ** 2) * 
-                math.atan(self._base_length_m / 2 / 
-                    self._center_of_mass_height_m - alpha))
+                math.sqrt(self.dimensions.base_length_m ** 2 / 4 + 
+                    self.dimensions.center_of_mass() ** 2) * 
+                math.atan(self.dimensions.base_length_m / 2 / 
+                    self.dimensions.center_of_mass() - alpha))
         elif alpha == math.pi / 2:
-            distance_m = self._base_length_m / 2
+            distance_m = self.dimensions.base_length_m / 2
         elif math.pi / 2 < alpha and alpha < math.pi:
             distance_m = (
                 math.sqrt(
-                    self._base_length_m ** 2 / 4 + 
-                    (self._side_length_m - 
-                     self._center_of_mass_height_m) ** 2) *
+                    self.dimensions.base_length_m ** 2 / 4 + 
+                    (self.dimensions.side_length_m - 
+                     self.dimensions.center_of_mass()) ** 2) *
                 (math.pi - alpha - 
-                 math.atan(self._base_length_m / 2 / 
-                    (self._side_length_m - self._center_of_mass_height_m))))
+                 math.atan(self.dimensions.base_length_m / 2 / 
+                    (self.dimensions.side_length_m - 
+                     self.dimensions.center_of_mass()))))
         elif alpha == math.pi:
-            distance_m = self._side_length_m + self._center_of_mass_height_m
+            distance_m = self.dimensions.side_length_m + self.dimensions.center_of_mass()
         else:
             raise Exception("compute_distance_from_ground(): angle not in expected range")
 

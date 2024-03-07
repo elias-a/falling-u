@@ -2,8 +2,7 @@ import os
 import tomli
 from u import U
 from simulate import Simulation
-#from visualize import visualize
-import vpython
+from visualize import visualize
 
 
 try:
@@ -23,7 +22,7 @@ try:
 except Exception as e:
     raise Exception()
 
-u_object = U(
+u_ = U(
     base_length_m=base_length_m,
     side_length_m=side_length_m,
     position_x_m=position_x_m,
@@ -33,48 +32,6 @@ u_object = U(
     angular_position_rad=angular_position_rad,
     angular_velocity_rad_s=angular_velocity_rad_s)
 
-#simulation = Simulation(_u, time_step_s=time_step_s)
-#data = simulation.run(rate=5)
-#visualize(_u, data, rate=5)
-
-vpython.scene.width = 500
-vpython.scene.height = 600
-vpython.scene.center = vpython.vec(0, u_object.position_m().y / 2, 0)
-thickness = 0.001
-
-ground = vpython.box(
-    pos=vpython.vec(0, 0, 0),
-    length=1,
-    height=0.01,
-    width=thickness)
-
-base = vpython.box(
-    pos=vpython.vec(
-        u_object.position_m().x,
-        u_object.position_m().y - u_object._center_of_mass_height_m,
-        0),
-    length=u_object._base_length_m,
-    height=thickness,
-    width = thickness,
-    up=vpython.vec(0, 1, 0))
-side_left = vpython.box(
-    pos=vpython.vec(
-        u_object.position_m().x - 0.5 * u_object._base_length_m,
-        u_object.position_m().y - u_object._center_of_mass_height_m + 0.5 * u_object._side_length_m,
-        0),
-    length=u_object._side_length_m,
-    height=thickness,
-    width=thickness,
-    up=vpython.vec(1, 0, 0))
-side_right = vpython.box(
-    pos=vpython.vec(
-        u_object.position_m().x + 0.5 * u_object._base_length_m,
-        u_object.position_m().y - u_object._center_of_mass_height_m + 0.5 * u_object._side_length_m,
-        0),
-    length=u_object._side_length_m,
-    height=thickness,
-    width=thickness,
-    up=vpython.vec(1, 0, 0))
-
-while True:
-    vpython.rate(60)
+simulation = Simulation(u_, time_step_s=time_step_s)
+data = simulation.run()
+#visualize(u_.dimensions, data)
