@@ -1,2 +1,2 @@
 tomli
--e git+https://github.com/vpython/vpython-jupyter.git@7.6.5.beta5#egg=vpython
+vpython @ git+https://github.com/elias-a/vpython.git@master
