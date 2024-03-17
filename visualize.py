@@ -17,10 +17,10 @@ def _base(p, d):
 
 
 def _create_box(length, thickness, up):
-    return box(length=length, height=thickness, width = thickness, up=up)
+    return box(length=length, height=thickness, width=thickness, up=up)
 
 
-def visualize(dimensions, data):
+def visualize(dimensions, data, rate_):
     # Initialize U object using the first data point.
     if len(data) == 0:
         raise Exception("Empty data.")
@@ -34,6 +34,7 @@ def visualize(dimensions, data):
     # purely for visual purposes.
     thickness = 0.001
 
+    ground = _create_box(1, thickness, vec(0, 1, 0))
     base = _create_box(dimensions.base_length_m, thickness, vec(0, 1, 0))
     left_side = _create_box(dimensions.side_length_m, thickness, vec(1, 0, 0))
     right_side = _create_box(dimensions.side_length_m, thickness, vec(1, 0, 0))
@@ -41,5 +42,7 @@ def visualize(dimensions, data):
     base.pos = _base(data[0], dimensions)
     left_side.pos, right_side.pos = _sides(data[0], dimensions)
 
-    while True:
-        rate(60)
+    for point in data:
+        rate(rate_)
+        base.pos = _base(point, dimensions)
+        left_side.pos, right_side.pos = _sides(point, dimensions)

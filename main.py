@@ -33,5 +33,6 @@ u_ = U(
     angular_velocity_rad_s=angular_velocity_rad_s)
 
 simulation = Simulation(u_, time_step_s=time_step_s)
-data = simulation.run()
-visualize(u_.dimensions, data)
+rate = 150
+data = simulation.run(rate)
+visualize(u_.dimensions, data, rate)
