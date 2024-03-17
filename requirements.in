@@ -1,2 +1,2 @@
 tomli
-vpython @ git+https://github.com/elias-a/vpython.git@master
+git+https://github.com/vpython/vpython-jupyter.git@2367f4a
