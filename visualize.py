@@ -1,19 +1,8 @@
-from vpython import scene, box, vec, rate
+from vpython import scene, box, compound, vec, rate
 
 
 def vec_2d(x, y):
     return vec(x, y, 0)
-
-
-def _sides(p, d):
-    y = p.y - d.center_of_mass() + d.side_length_m / 2
-    left = vec_2d(x=p.x - d.base_length_m / 2, y=y)
-    right = vec_2d(x=p.x + d.base_length_m / 2, y=y)
-    return left, right
-
-
-def _base(p, d):
-    return vec_2d(x=p.x, y=p.y - d.center_of_mass())
 
 
 def _create_box(length, thickness, up):
@@ -32,17 +21,23 @@ def visualize(dimensions, data, rate_):
     scene.center = vec(0, data[0].y / 2, 0)
     # The object is modeled with thin height and width. This value is
     # purely for visual purposes.
-    thickness = 0.001
+    thickness = 0.005
 
     ground = _create_box(1, thickness, vec(0, 1, 0))
     base = _create_box(dimensions.base_length_m, thickness, vec(0, 1, 0))
     left_side = _create_box(dimensions.side_length_m, thickness, vec(1, 0, 0))
     right_side = _create_box(dimensions.side_length_m, thickness, vec(1, 0, 0))
 
-    base.pos = _base(data[0], dimensions)
-    left_side.pos, right_side.pos = _sides(data[0], dimensions)
+    base.pos = vec_2d(x=data[0].x, y=data[0].y - dimensions.center_of_mass())
+    y = data[0].y - dimensions.center_of_mass() + dimensions.side_length_m / 2
+    left_side.pos = vec_2d(x=data[0].x - dimensions.base_length_m / 2, y=y)
+    right_side.pos = vec_2d(x=data[0].x + dimensions.base_length_m / 2, y=y)
+    u = compound([base, left_side, right_side], origin=vec_2d(data[0].x, data[0].y), pos=vec_2d(0, 1))
+    u.rotate(
+        axis=vec(0, 0, 1),
+        angle=data[0].theta,
+        origin=vec_2d(data[0].x, data[0].y))
 
     for point in data:
         rate(rate_)
-        base.pos = _base(point, dimensions)
-        left_side.pos, right_side.pos = _sides(point, dimensions)
+        u.pos = vec_2d(x=point.x, y=point.y)
