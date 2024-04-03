@@ -1,5 +1,10 @@
 import math
+from math import sqrt, sin, cos, acos, pi, tan
 from dataclasses import dataclass
+
+
+def sq(x):
+    return x ** 2
 
 
 @dataclass(kw_only=True)
@@ -82,32 +87,33 @@ class U:
             if 0 <= self._angular_position_rad 
                 and self._angular_position_rad <= math.pi
             else 2 * math.pi - self._angular_position_rad)
-        position_norm = self._get_position_norm()
+        position_norm = self.position_m().y #self._get_position_norm()
         distance_m = 0
 
         # TODO: update paper with alpha=0 equation
-        # TODO: should I use math.atan or math.atan2?
 
         if alpha == 0:
             distance_m = self.dimensions.center_of_mass()
         elif 0 < alpha and alpha < math.pi / 2:
             distance_m = (
-                math.sqrt(self.dimensions.base_length_m ** 2 / 4 + 
-                    self.dimensions.center_of_mass() ** 2) * 
-                math.atan(self.dimensions.base_length_m / 2 / 
-                    self.dimensions.center_of_mass() - alpha))
+                (self.dimensions.center_of_mass() / cos(alpha)) + 
+                ((self.dimensions.base_length_m / 2 - self.dimensions.center_of_mass() * tan(alpha)) * cos(pi / 2 - alpha))
+            )
         elif alpha == math.pi / 2:
             distance_m = self.dimensions.base_length_m / 2
         elif math.pi / 2 < alpha and alpha < math.pi:
             distance_m = (
-                math.sqrt(
-                    self.dimensions.base_length_m ** 2 / 4 + 
-                    (self.dimensions.side_length_m - 
-                     self.dimensions.center_of_mass()) ** 2) *
-                (math.pi - alpha - 
-                 math.atan(self.dimensions.base_length_m / 2 / 
-                    (self.dimensions.side_length_m - 
-                     self.dimensions.center_of_mass()))))
+                ((self.dimensions.side_length_m - 
+                  self.dimensions.center_of_mass()) / 
+                 cos(pi - alpha)) + 
+                (
+                    (self.dimensions.base_length_m / 2 - (
+                        self.dimensions.side_length_m - 
+                        self.dimensions.center_of_mass()) * 
+                     tan(pi - alpha)) * 
+                    (cos(alpha - pi / 2))
+                )
+            )
         elif alpha == math.pi:
             distance_m = self.dimensions.side_length_m + self.dimensions.center_of_mass()
         else:
