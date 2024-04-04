@@ -1,4 +1,4 @@
-from vpython import scene, box, compound, vec, rate
+from vpython import scene, box, compound, vec, rate, cos, sin
 
 
 def vec_2d(x, y):
@@ -32,12 +32,13 @@ def visualize(dimensions, data, rate_):
     y = data[0].y - dimensions.center_of_mass() + dimensions.side_length_m / 2
     left_side.pos = vec_2d(x=data[0].x - dimensions.base_length_m / 2, y=y)
     right_side.pos = vec_2d(x=data[0].x + dimensions.base_length_m / 2, y=y)
-    u = compound([base, left_side, right_side], origin=vec_2d(data[0].x, data[0].y), pos=vec_2d(0, 1))
-    u.rotate(
-        axis=vec(0, 0, 1),
-        angle=data[0].theta,
-        origin=vec_2d(data[0].x, data[0].y))
+    u = compound(
+        [base, left_side, right_side],
+        origin=vec_2d(data[0].x, data[0].y),
+        pos=vec_2d(0, 1),
+        up=vec_2d(-sin(data[0].theta), cos(data[0].theta)))
 
     for point in data:
         rate(rate_)
         u.pos = vec_2d(x=point.x, y=point.y)
+        u.up = vec_2d(-sin(data[0].theta), cos(data[0].theta))
