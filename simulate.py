@@ -1,5 +1,5 @@
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, astuple
 from u import Vector
 
 
@@ -9,6 +9,9 @@ class State:
     y: float
     theta: float
 
+    def __iter__(self):
+        return iter(astuple(self))
+
 
 class Simulation:
     def __init__(self, u, time_step_s = 0.001, gravity_m_s2 = -9.81):
@@ -17,7 +20,11 @@ class Simulation:
         self._gravity_m_s2 = gravity_m_s2
 
     def run(self, rate, total_time_s = 1):
-        data = []
+        data = [State(
+            x=self._u.position_m().x,
+            y=self._u.position_m().y,
+            theta=self._u.angular_position_rad()
+        )]
         t = 0
         i = 0
         while t < total_time_s:
