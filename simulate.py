@@ -14,29 +14,43 @@ class State:
 
 
 class Simulation:
-    def __init__(self, u, time_step_s = 0.001, gravity_m_s2 = -9.81):
+    def __init__(
+        self,
+        u,
+        time_step_s=0.001,
+        stopping_velocity=1e-5,
+        surface_factor=0.85,
+        gravity_m_s2=-9.81,
+    ):
         self._u = u
         self._time_step_s = time_step_s
+        self._stopping_velocity = stopping_velocity
+        self._surface_factor = surface_factor
         self._gravity_m_s2 = gravity_m_s2
 
-    def run(self, rate, total_time_s = 1):
-        data = [State(
-            x=self._u.position_m().x,
-            y=self._u.position_m().y,
-            theta=self._u.angular_position_rad()
-        )]
-        t = 0
+    def run(self, rate):
+        data = [
+            State(
+                x=self._u.position_m().x,
+                y=self._u.position_m().y,
+                theta=self._u.angular_position_rad(),
+            ),
+        ]
         i = 0
-        while t < total_time_s:
+        while True:
             state = self._propagate()
-            if self._u.compute_distance_from_ground() <= 0:
+            if self._u.compute_distance_from_ground() <= 0 and self._u.velocity_m_s().y < 0:
                 data.append(state)
-                break
+                self._apply_impulse()
+                if abs(self._u.velocity_m_s().y) < self._stopping_velocity:
+                    break
             if i % rate == 0:
                 data.append(state)
-            t += self._time_step_s
             i += 1
         return data
+
+    def _apply_impulse(self):
+        self._u.velocity_m_s().y *= -self._surface_factor
 
     def _propagate(self):
         # Update position.
