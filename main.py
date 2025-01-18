@@ -6,7 +6,8 @@ from visualize import visualize
 
 
 try:
-    with open(os.path.join(os.path.dirname(__file__), "config.toml"), "rb") as f:
+    config_path = os.path.join(os.path.dirname(__file__), "config.toml")
+    with open(config_path, "rb") as f:
         config = tomli.load(f)
         dimensions_config = config["DIMENSIONS"]
         state_config = config["STATE"]
@@ -20,8 +21,7 @@ try:
         angular_velocity_rad_s = config["STATE"]["ANGULAR_VELOCITY_RAD_S"]
         time_step_s = config["SIMULATION"]["TIME_STEP_S"]
 except Exception as e:
-    raise Exception()
-
+    raise Exception(f"Error reading config: {e}")
 u_ = U(
     base_length_m=base_length_m,
     side_length_m=side_length_m,
@@ -30,8 +30,8 @@ u_ = U(
     velocity_x_m_s=velocity_x_m_s,
     velocity_y_m_s=velocity_y_m_s,
     angular_position_rad=angular_position_rad,
-    angular_velocity_rad_s=angular_velocity_rad_s)
-
+    angular_velocity_rad_s=angular_velocity_rad_s,
+)
 simulation = Simulation(u_, time_step_s=time_step_s)
 rate = 150
 data = simulation.run(rate)

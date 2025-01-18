@@ -73,7 +73,7 @@ class U:
         return self._angular_position_rad
 
     def angular_velocity_rad_s(self, omega: float = None):
-        if omega is not None and isinstance(theta, float):
+        if omega is not None and isinstance(omega, float):
             self._angular_velocity_rad_s = omega
         return self._angular_velocity_rad_s
 
